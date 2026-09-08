@@ -15,12 +15,15 @@ import AdminPage from "./pages/AdminPage";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
+import ScrollToTop from "./components/common/ScrollToTop";
 
 export default function App() {
   const [isPulse] = useState(false);
 
   return (
-    <Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
       {/* 1. PUBLIC ROUTE: Login Page (Accessible only when NOT logged in) */}
       <Route
         path="/login"
@@ -53,5 +56,6 @@ export default function App() {
       {/* 4. Fallback on undefined route */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </>
   );
 }
