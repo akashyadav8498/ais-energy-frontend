@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Sidebar from "./components/common/Sidebar";
-import Header from "./components/common/Header";
 
+import AppLayout from "./components/layout/AppLayout";
 import DashboardPage from "./pages/DashboardPage";
 import LocationsPage from "./pages/LocationsPage";
 import DeviceDetailPage from "./pages/DeviceDetailsPage";
@@ -11,23 +10,38 @@ import AlarmsEventsPage from "./pages/AlarmsEventsPage";
 import DevicesPage from "./pages/DevicesPage";
 import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
+import LoginPage from "./pages/LoginPage";
+import AdminPage from "./pages/AdminPage";
+
+import ProtectedRoute from "./routes/ProtectedRoute";
+import PublicRoute from "./routes/PublicRoute";
+import ScrollToTop from "./components/common/ScrollToTop";
 
 export default function App() {
   const [isPulse] = useState(false);
-  // Mobile menu ke sidebar show/hide ke liye state
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: 'var(--app-bg)', fontFamily: 'var(--font-sans)', color: '#1e293b' }}>
-      {/* Sidebar - Mobile Toggle Props */}
-      <Sidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+    <>
+      <ScrollToTop />
+      <Routes>
+      {/* 1. PUBLIC ROUTE: Login Page (Accessible only when NOT logged in) */}
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        }
+      />
 
-      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto">
-        {/* Header - Mobile Menu Toggle Props */}
-        <Header isPulse={isPulse} isMobileMenuOpen={isMobileMenuOpen} setIsMobileMenuOpen={setIsMobileMenuOpen} />
+      {/* 2. ADMIN ONLY ROUTE */}
+      <Route element={<ProtectedRoute requireAdmin={true} />}>
+        <Route path="/admin" element={<AdminPage />} />
+      </Route>
 
-        {/* Declarative Client Routing */}
-        <Routes>
+      {/* 3. PROTECTED DASHBOARD ROUTES (Wrapped in unified AppLayout with GlobalHeader, Sidebar, PageHeaderCard & Footer) */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<AppLayout isPulse={isPulse} />}>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/locations" element={<LocationsPage />} />
           <Route path="/device-details" element={<DeviceDetailPage />} />
@@ -36,11 +50,12 @@ export default function App() {
           <Route path="/devices" element={<DevicesPage />} />
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
+        </Route>
+      </Route>
 
-          {/* Fallback to Dashboard on undefined route */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </main>
-    </div>
+      {/* 4. Fallback on undefined route */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+    </>
   );
 }

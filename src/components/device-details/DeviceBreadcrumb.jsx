@@ -1,30 +1,74 @@
-import { MapPin, ChevronDown, Calendar } from "lucide-react";
+import React, { memo } from "react";
+import { MapPin, Calendar, ChevronRight } from "lucide-react";
+import PageHeaderCard from "../layout/PageHeaderCard";
 
-export default function DeviceBreadcrumb() {
+const DeviceBreadcrumb = memo(function DeviceBreadcrumb({
+  locations = [],
+  currentLocation,
+  currentMeter,
+  onLocationChange,
+}) {
+  const locationName = currentLocation?.name || "Delhi Site";
+  const gatewayName = currentMeter?.gatewayName || "Gateway-02";
+  const dcuName = currentMeter?.dcuName || "DCU-021";
+  const meterName = currentMeter?.name || "Meter-003";
+
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white p-3 sm:p-4 rounded-xl border border-slate-200/80 shadow-sm">
-      <div className="space-y-1">
-        <h1 className="text-lg sm:text-xl font-bold text-slate-900 leading-none">Device Detail</h1>
-        <div className="text-[11px] sm:text-xs text-slate-400 font-medium flex flex-wrap items-center gap-1 sm:gap-1.5">
-          <span>Home</span> &gt; <span>Locations</span> &gt; <span>Mumbai Site</span> &gt; <span>Gateway-02</span> &gt; <span>DCU-021</span> &gt;{" "}
-          <span className="text-slate-700 font-semibold">Meter-003</span>
-        </div>
-      </div>
+    <div className="space-y-3">
+      {/* 1. Global Page Header Card */}
+      <PageHeaderCard
+        title="Device Detail"
+        subtitle="Monitor real-time data, configuration and performance metrics for your device."
+        actions={
+          <>
+            {/* Location Selector */}
+            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 shadow-2xs">
+              <MapPin className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+              <select
+                value={currentLocation?.id || "DEL-001"}
+                onChange={(e) => onLocationChange && onLocationChange(e.target.value)}
+                className="bg-transparent border-none outline-none font-bold text-slate-700 text-xs cursor-pointer pr-1"
+              >
+                {locations.length > 0 ? (
+                  locations.map((loc) => (
+                    <option key={loc.id} value={loc.id}>
+                      {loc.name}
+                    </option>
+                  ))
+                ) : (
+                  <option value="DEL-001">Delhi Site</option>
+                )}
+              </select>
+            </div>
 
-      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-        <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/80 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 shadow-sm">
-          <MapPin className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-          <span className="truncate max-w-[100px] sm:max-w-none">Mumbai Site</span>
-          <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-        </div>
+            {/* Live Date Time Display */}
+            <div className="hidden sm:flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 shadow-2xs">
+              <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <span>20 May 2025</span>
+              <span className="text-slate-300">|</span>
+              <span className="font-mono text-xs text-slate-700 tabular-nums">10:24:35 AM</span>
+              <Calendar className="w-3.5 h-3.5 text-slate-400 ml-0.5 shrink-0" />
+            </div>
+          </>
+        }
+      />
 
-        <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/80 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 shadow-sm">
-          <span>20 May 2025</span>
-          <span className="text-slate-300">|</span>
-          <span className="font-mono text-xs">10:24:35 AM</span>
-          <Calendar className="w-3.5 h-3.5 text-slate-400 ml-0.5 shrink-0" />
-        </div>
+      {/* 2. Breadcrumb Navigation Bar */}
+      <div className="bg-white border border-slate-200 rounded-xl px-4 py-2.5 shadow-2xs flex items-center gap-1.5 text-xs text-slate-500 font-medium overflow-x-auto">
+        <span className="hover:text-slate-900 cursor-pointer transition-colors">Home</span>
+        <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+        <span className="hover:text-slate-900 cursor-pointer transition-colors">Locations</span>
+        <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+        <span className="hover:text-slate-900 cursor-pointer transition-colors">{locationName}</span>
+        <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+        <span className="hover:text-slate-900 cursor-pointer transition-colors">{gatewayName}</span>
+        <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+        <span className="hover:text-slate-900 cursor-pointer transition-colors">{dcuName}</span>
+        <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+        <span className="text-slate-900 font-bold">{meterName}</span>
       </div>
     </div>
   );
-}
+});
+
+export default DeviceBreadcrumb;

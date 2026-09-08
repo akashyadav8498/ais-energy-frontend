@@ -60,8 +60,8 @@ export default function LocationTable({ data, viewMode, setViewMode }) {
           </thead>
           <tbody className="divide-y divide-slate-100 text-xs">
             {data.map((row) => (
-              <tr 
-                key={row.id} 
+              <tr
+                key={row.id}
                 onClick={() => handleNavigateToDetails(row.id)}
                 className="hover:bg-slate-200 transition-colors duration-150 cursor-pointer"
               >
@@ -97,20 +97,20 @@ export default function LocationTable({ data, viewMode, setViewMode }) {
                 <td className="py-3 px-4 text-center text-[10px] text-slate-500 font-medium whitespace-pre-line leading-tight">{row.lastUpdate}</td>
                 <td className="py-3 px-4 text-center">
                   <div className="flex items-center justify-center gap-1 text-slate-400">
-                    <button 
+                    <button
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleNavigateToDetails(row.id);
-                      }} 
+                      }}
                       className="p-1 hover:text-blue-600 hover:bg-slate-200/60 rounded transition-colors"
                       title="View Device Details"
                     >
                       <Eye className="w-4 h-4" />
                     </button>
-                    <button 
+                    <button
                       type="button"
-                      onClick={(e) => e.stopPropagation()} 
+                      onClick={(e) => e.stopPropagation()}
                       className="p-1 hover:text-slate-700 hover:bg-slate-200/60 rounded transition-colors"
                     >
                       <MoreVertical className="w-4 h-4" />
