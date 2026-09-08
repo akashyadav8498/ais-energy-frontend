@@ -27,6 +27,7 @@ import {
   Plus,
 } from "lucide-react";
 import { Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart } from "recharts";
+import PageHeaderCard from "../components/layout/PageHeaderCard";
 
 // Mock Data
 const reportTypes = [
@@ -43,49 +44,61 @@ const kpiMetrics = [
     title: "TOTAL ENERGY",
     value: "1,245.60 kWh",
     subtext: "+ 12.5% vs last week",
-    subtextColor: "text-emerald-600",
+    subColor: "text-emerald-600",
     icon: Zap,
-    iconBg: "bg-blue-50 text-blue-600 border-blue-100",
+    iconBg: "bg-blue-100",
+    color: "text-blue-600",
+    borderAccent: "border-l-blue-500",
   },
   {
     title: "TOTAL COST",
     value: "₹ 12,456.00",
     subtext: "+ 10.8% vs last week",
-    subtextColor: "text-emerald-600",
+    subColor: "text-emerald-600",
     icon: IndianRupee,
-    iconBg: "bg-emerald-50 text-emerald-600 border-emerald-100",
+    iconBg: "bg-emerald-100",
+    color: "text-emerald-600",
+    borderAccent: "border-l-emerald-500",
   },
   {
     title: "PEAK DEMAND",
     value: "96.40 kW",
     subtext: "18 May 2025, 06:15 PM",
-    subtextColor: "text-slate-400 font-normal",
+    subColor: "text-slate-400 font-normal",
     icon: Activity,
-    iconBg: "bg-amber-50 text-amber-600 border-amber-100",
+    iconBg: "bg-amber-100",
+    color: "text-amber-600",
+    borderAccent: "border-l-amber-500",
   },
   {
     title: "AVG POWER FACTOR",
     value: "0.98",
     subtext: "+ 0.02 vs last week",
-    subtextColor: "text-emerald-600",
+    subColor: "text-emerald-600",
     icon: Gauge,
-    iconBg: "bg-purple-50 text-purple-600 border-purple-100",
+    iconBg: "bg-purple-100",
+    color: "text-purple-600",
+    borderAccent: "border-l-purple-500",
   },
   {
     title: "ACTIVE METERS",
     value: "282 / 320",
     subtext: "88.1% Active",
-    subtextColor: "text-slate-500 font-medium",
+    subColor: "text-slate-500 font-medium",
     icon: CheckCircle2,
-    iconBg: "bg-cyan-50 text-cyan-600 border-cyan-100",
+    iconBg: "bg-teal-100",
+    color: "text-teal-600",
+    borderAccent: "border-l-teal-500",
   },
   {
     title: "TOTAL ALARMS",
     value: "107",
     subtext: "8 Critical",
-    subtextColor: "text-rose-600 font-bold",
+    subColor: "text-rose-600 font-bold",
     icon: Bell,
-    iconBg: "bg-rose-50 text-rose-600 border-rose-100",
+    iconBg: "bg-rose-100",
+    color: "text-rose-600",
+    borderAccent: "border-l-rose-500",
   },
 ];
 
@@ -131,43 +144,53 @@ export default function ReportsPage() {
   const [scheduleEnabled, setScheduleEnabled] = useState(true);
 
   return (
-    <div className="w-full bg-slate-50 min-h-screen text-slate-800 p-4 font-sans space-y-4">
-      {/* 1. TOP HEADER & MAIN ACTION BUTTONS */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-bold text-slate-900 leading-tight">Reports</h1>
-          <p className="text-xs text-slate-500">Generate and download energy reports and analytics</p>
-        </div>
+    <div className="w-full min-h-screen text-slate-800 p-4 sm:p-6 font-sans space-y-4">
+      {/* 1. Standardized Horizontal Page Header Card */}
+      <PageHeaderCard
+        title="Reports"
+        subtitle="Generate, schedule, and download comprehensive energy reports and analytics"
+        actions={
+          <>
+            {/* Quick Range Selector */}
+            <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl p-1 shadow-2xs">
+              <span className="text-[10px] font-bold text-slate-400 px-2 uppercase tracking-wide">
+                Range
+              </span>
+              {["Today", "This Week", "This Month", "Custom"].map((range) => (
+                <button
+                  key={range}
+                  type="button"
+                  onClick={() => setSelectedRange(range)}
+                  className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                    selectedRange === range
+                      ? "bg-white text-blue-600 shadow-2xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                  }`}
+                >
+                  {range}
+                </button>
+              ))}
+            </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Quick Range Selector */}
-          <div className="flex items-center bg-white border border-slate-200 rounded-lg p-1 shadow-xs">
-            <span className="text-[11px] font-bold text-slate-400 px-2 uppercase tracking-wide">Quick Range</span>
-            {["Today", "Yesterday", "This Week", "Last Week", "This Month", "Custom"].map((range) => (
-              <button
-                key={range}
-                onClick={() => setSelectedRange(range)}
-                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer ${
-                  selectedRange === range ? "bg-blue-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                }`}
-              >
-                {range}
-              </button>
-            ))}
-          </div>
+            <button
+              type="button"
+              className="bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-blue-700 flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Generate Report</span>
+            </button>
 
-          <button className="bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer">
-            <Plus className="w-4 h-4" />
-            <span>Generate Report</span>
-          </button>
-
-          <button className="bg-white border border-slate-200 text-slate-700 text-xs font-bold px-3.5 py-2 rounded-lg hover:bg-slate-50 flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer">
-            <Download className="w-3.5 h-3.5 text-slate-500" />
-            <span>Export</span>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400 ml-1" />
-          </button>
-        </div>
-      </div>
+            <button
+              type="button"
+              className="bg-white border border-slate-200 text-slate-700 text-xs font-bold px-3.5 py-2 rounded-xl hover:bg-slate-50 flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
+            >
+              <Download className="w-3.5 h-3.5 text-slate-500" />
+              <span>Export</span>
+              <ChevronDown className="w-3.5 h-3.5 text-slate-400 ml-0.5" />
+            </button>
+          </>
+        }
+      />
 
       {/* 2. SELECT REPORT TYPE CARDS */}
       <div className="space-y-2">
@@ -262,7 +285,7 @@ export default function ReportsPage() {
               <div className="min-w-0">
                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider truncate">{metric.title}</p>
                 <p className="text-base font-black text-slate-900 leading-tight truncate">{metric.value}</p>
-                <p className={`text-[10px] font-semibold truncate ${metric.subtextColor}`}>{metric.subtext}</p>
+                <p className={`text-[10px] font-semibold truncate ${metric.subtextColor || metric.subColor}`}>{metric.subtext}</p>
               </div>
             </div>
           );

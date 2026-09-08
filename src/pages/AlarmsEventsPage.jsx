@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Bell, AlertTriangle, AlertCircle, Info as InfoIcon, CheckCircle2, Search, Download, Eye, MoreVertical, ChevronLeft, ChevronRight, Filter, TrendingDown } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+import PageHeaderCard from "../components/layout/PageHeaderCard";
 
 // --- Mock Data ---
 const severityDistribution = [
@@ -65,7 +66,34 @@ export default function AlarmsEventsPage() {
   };
 
   return (
-    <div className="space-y-4 pb-8 text-slate-800 p-5">
+    <div className="space-y-4 pb-8 text-slate-800 p-4 sm:p-6">
+      {/* Top Standardized Page Header Card */}
+      <PageHeaderCard
+        title="Alarms & Events"
+        subtitle="Monitor, analyze, and manage all device alarms, thresholds, and system notifications"
+        actions={
+          <>
+            <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 w-full sm:w-60">
+              <Search className="w-4 h-4 text-slate-400 shrink-0" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search alarms..."
+                className="bg-transparent text-xs text-slate-700 outline-none w-full placeholder:text-slate-400 font-medium"
+              />
+            </div>
+
+            <button
+              type="button"
+              className="flex items-center gap-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs px-3.5 py-2 rounded-xl transition-colors shadow-2xs cursor-pointer"
+            >
+              <Download className="w-3.5 h-3.5 text-slate-500" />
+              <span>Export Log</span>
+            </button>
+          </>
+        }
+      />
 
       {/* 1. KPI Summary Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { RefreshCw, Info } from "lucide-react";
+import { RefreshCw, Info, MapPin, Calendar } from "lucide-react";
 
+import PageHeaderCard from "../layout/PageHeaderCard";
 import KpiCards from "./KpiCards";
 import LiveMapSection from "./LiveMapSection";
 import EnergyConnectivity from "./EnergyConnectivity";
@@ -41,6 +42,7 @@ export default function DashboardView({ isPulse, setIsPulse }) {
   const [todaysEnergy, setTodaysEnergy] = useState(6842.35);
   const [locations, setLocations] = useState(initialLocations);
   const [events] = useState(initialEvents);
+  const [selectedSite, setSelectedSite] = useState("all");
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -75,39 +77,55 @@ export default function DashboardView({ isPulse, setIsPulse }) {
   }, [totalPower, setIsPulse]);
 
   return (
-    <div className="p-5 space-y-4">
-      {/* Live Data Header Bar */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <span className="text-[11px] font-black text-slate-700 tracking-wide uppercase">
-            Real-Time Overview
-          </span>
-          <span className="live-indicator text-[9px]">
-            <span className="status-dot-live" style={{ width: 6, height: 6, minWidth: 6 }} />
-            Auto-refresh: 4s
-          </span>
-        </div>
-        <div className="text-[10px] font-semibold text-slate-400 font-mono">
-          Asia/Kolkata (IST) · {new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-        </div>
-      </div>
+    <div className="p-4 sm:p-6 space-y-4">
+      {/* 1. Standardized Horizontal Page Header Card */}
+      <PageHeaderCard
+        title="Fleet Dashboard"
+        subtitle="Overall system status, energy monitoring, and asset summary"
+        actions={
+          <>
+            {/* Site Dropdown */}
+            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 font-bold text-slate-700 shadow-2xs">
+              <MapPin className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+              <select
+                value={selectedSite}
+                onChange={(e) => setSelectedSite(e.target.value)}
+                className="bg-transparent border-none font-bold text-slate-700 text-xs outline-none cursor-pointer"
+              >
+                <option value="all">All Locations</option>
+                <option value="mumbai">Mumbai Site</option>
+                <option value="delhi">Delhi Site</option>
+                <option value="pune">Pune Site</option>
+                <option value="bangalore">Bangalore Site</option>
+              </select>
+            </div>
 
+            {/* Date Range */}
+            <div className="hidden sm:flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-600 shadow-2xs text-xs">
+              <Calendar className="w-3.5 h-3.5 text-slate-400" />
+              <span className="font-mono text-[11px]">20 May 2025</span>
+            </div>
+
+            {/* Live Auto-Refresh Badge */}
+            <div className="flex items-center gap-1.5 bg-blue-50 border border-blue-100 text-blue-700 rounded-xl px-3 py-2 text-xs font-bold shadow-2xs">
+              <span className="status-dot-live" style={{ width: 6, height: 6, minWidth: 6 }} />
+              <span>Auto-refresh: 4s</span>
+            </div>
+          </>
+        }
+      />
+
+      {/* 2. KPI Cards */}
       <KpiCards totalPower={totalPower} todaysEnergy={todaysEnergy} />
 
+      {/* 3. Live Map and Power Trend Section */}
       <LiveMapSection powerData={powerData} timeRange={timeRange} setTimeRange={setTimeRange} />
 
+      {/* 4. Energy Connectivity */}
       <EnergyConnectivity todaysEnergy={todaysEnergy} />
 
+      {/* 5. Trends & Events */}
       <TrendsAndEvents locations={locations} events={events} />
-
-      {/* Footer Notice */}
-      <div
-        className="flex items-center justify-center gap-1.5 text-[10px] font-semibold pb-2 pt-1"
-        style={{ color: '#94a3b8' }}
-      >
-        <Info className="w-3.5 h-3.5" />
-        All timestamps are in Asia/Kolkata (IST). Data refreshes automatically every 4 seconds.
-      </div>
     </div>
   );
 }
